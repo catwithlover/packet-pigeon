@@ -1,5 +1,6 @@
 import { Hono } from "hono";
 import PostalMime from 'postal-mime';
+import { uuidv7 } from "uuidv7";
 
 interface Env {
 	EMAIL: SendEmail;
@@ -17,10 +18,10 @@ export default {
   async email(message, env, ctx): Promise<void> {
 
     const workerReceivedAt = (new Date()).toISOString();
-    const emailId = crypto.randomUUID();
+    const emailId = uuidv7();
     const envelopeFrom = message.from;
     const envelopeTo = message.to;
-    const bucketKey = `raw/${emailId}.eml`;
+    const bucketKey = `emails/${emailId}/raw.eml`;
 
     console.log(`Storing email to R2 bucket with key: ${bucketKey}`);
 
@@ -106,8 +107,25 @@ export default {
         workerReceivedAt,
        });
 
-      for (const attachment of attachments) {
-        const attachmentId = crypto.randomUUID();
+      if (html) {
+
+        const bucketKeyHtml = `emails/${emailId}/body.html`;
+
+        await env.EMAIL_BUCKET.put(
+              bucketKeyHtml, 
+              html || '',
+              {
+                httpMetadata: {
+                  contentType: "text/html",
+                },
+                customMetadata: {},
+              }
+        );
+
+      }
+
+      for (let ordinal in attachments) {
+        const attachment = attachments[ordinal];
 
         const {
           filename,
@@ -118,14 +136,14 @@ export default {
 
         const safeFilename = ( filename || "untitled" ).replace(/[\/\\:*?"<>|\x00-\x1f]/g, "_");
 
-        const bucketKey = `attachments/${emailId}/${attachmentId}/${safeFilename}`;
+        const bucketKeyAttachment = `emails/${emailId}/attachments/${ordinal}/${safeFilename}`;
 
         console.log({filename, mimeType, content, contentId})
 
         console.log(`Storing attachment to R2 bucket with key: ${bucketKey}`);
 
         await env.EMAIL_BUCKET.put(
-            bucketKey, 
+            bucketKeyAttachment, 
             content as ArrayBuffer,
             {
               httpMetadata: {
