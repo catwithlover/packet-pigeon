@@ -5,7 +5,7 @@
   <p>English · <a href="README.zh-Hant.md" lang="zh-Hant">繁體中文</a></p>
 </div>
 
-**Packet Pigeon** is a Cloudflare Worker that receives inbound mail via Email Routing, archives the raw MIME to R2, then parses it asynchronously via Queues.
+**Packet Pigeon** — Email capabilities for AI agents — receive, read, reply, and send through MCP.
 
 ## How it works
 

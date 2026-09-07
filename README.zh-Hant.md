@@ -5,7 +5,7 @@
   <p><a href="README.md" lang="en">English</a> · 繁體中文</p>
 </div>
 
-**Packet Pigeon** 是跑在 Cloudflare Workers 上的收信服務：經由 Email Routing 收信，將原始 MIME 存入 R2，再透過 Queues 非同步解析。
+**Packet Pigeon** — 為 AI agents 提供 Email 能力 — 透過 MCP 接收、讀取、回覆與發送。
 
 ## 運作方式
 
