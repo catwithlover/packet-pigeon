@@ -11,6 +11,31 @@
 		"binding": "ASSETS",
 		"directory": "./public"
 	},
+	"r2_buckets": [
+		{
+			"binding": "EMAIL_BUCKET",
+			"bucket_name": "packet-pigeon",
+		}
+	],
+	"queues": {
+		"consumers": [
+			{
+				"queue": "packet-pigeon-email-parse",
+				"max_batch_size": 10,
+				"max_batch_timeout": 5
+			}
+		]
+	},
+	// Email sending
+	"send_email": [
+		{
+			"name": "EMAIL",
+			"allowed_destination_addresses": ["hello@asyncat.app"]
+		}
+	],
+	"addresses": [
+		"ai@agent.asyncat.app"
+	],
 	"observability": {
 		"enabled": true
 	},
